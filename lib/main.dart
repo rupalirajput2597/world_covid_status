@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:world_covid_status/core/theme.dart';
+import 'package:world_covid_status/home/bloc/home_bloc.dart';
 import 'package:world_covid_status/navigator/bloc/navigator_bloc.dart';
 
 import 'home/home_screen.dart';
@@ -31,6 +32,9 @@ class _WorldCovidStatusAppState extends State<WorldCovidStatusApp> {
       providers: [
         BlocProvider<NavigatorBloc>(
           create: (_) => NavigatorBloc(navigatorKey: _navigatorKey),
+        ),
+        BlocProvider<HomeBloc>(
+          create: (_) => HomeBloc(),
         )
       ],
       child: MaterialApp(
