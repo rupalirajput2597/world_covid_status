@@ -45,3 +45,6 @@ app.*.map.json
 
 #secret keys file
 .secret_key.dart
+
+#Flutter/Dart/Pub related
+pubspec.lock

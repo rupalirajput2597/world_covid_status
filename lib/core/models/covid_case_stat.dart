@@ -1,17 +1,17 @@
-class CovidStat {
+class CovidStatResponse {
   String? get;
   Parameters? parameters;
   // List<Null>? errors;
   int? results;
-  List<CountryCovidStat>? response;
+  List<CovidDetailModel>? covidDetails;
 
-  CovidStat(
+  CovidStatResponse(
       {this.get,
       this.parameters,
       /*this.errors,*/ this.results,
-      this.response});
+      this.covidDetails});
 
-  CovidStat.fromJson(Map<String, dynamic> json) {
+  CovidStatResponse.fromJson(Map<String, dynamic> json) {
     get = json['get'];
     parameters = json['parameters'] != null
         ? Parameters.fromJson(json['parameters'])
@@ -22,9 +22,9 @@ class CovidStat {
     // }
     results = json['results'];
     if (json['response'] != null) {
-      response = <CountryCovidStat>[];
+      covidDetails = <CovidDetailModel>[];
       json['response'].forEach((v) {
-        response!.add(CountryCovidStat.fromJson(v));
+        covidDetails!.add(CovidDetailModel.fromJson(v));
       });
     }
   }
@@ -39,8 +39,8 @@ class CovidStat {
     //   data['errors'] = errors!.map((v) => v.toJson()).toList();
     // }
     data['results'] = results;
-    if (response != null) {
-      data['response'] = response!.map((v) => v.toJson()).toList();
+    if (covidDetails != null) {
+      data['response'] = covidDetails!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -62,7 +62,7 @@ class Parameters {
   }
 }
 
-class CountryCovidStat {
+class CovidDetailModel {
   String? continent;
   String? country;
   int? population;
@@ -72,7 +72,7 @@ class CountryCovidStat {
   String? day;
   String? time;
 
-  CountryCovidStat(
+  CovidDetailModel(
       {this.continent,
       this.country,
       this.population,
@@ -82,7 +82,7 @@ class CountryCovidStat {
       this.day,
       this.time});
 
-  CountryCovidStat.fromJson(Map<String, dynamic> json) {
+  CovidDetailModel.fromJson(Map<String, dynamic> json) {
     continent = json['continent'];
     country = json['country'];
     population = json['population'];
@@ -114,7 +114,7 @@ class CountryCovidStat {
 }
 
 class Cases {
-  int? newCases;
+  String? newCases;
   int? active;
   int? critical;
   int? recovered;
@@ -151,7 +151,7 @@ class Cases {
 }
 
 class Deaths {
-  int? newDeaths;
+  String? newDeaths;
   String? s1MPop;
   int? total;
 

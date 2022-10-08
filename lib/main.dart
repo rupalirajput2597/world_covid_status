@@ -35,14 +35,18 @@ class _WorldCovidStatusAppState extends State<WorldCovidStatusApp> {
         ),
         BlocProvider<HomeBloc>(
           create: (_) => HomeBloc(),
-        )
+        ),
+        // BlocProvider<CovidDetailCubit>(
+        //   create: (_) => CovidDetailCubit(),
+        // ),
       ],
       child: MaterialApp(
         title: 'World Covid Status',
         navigatorKey: _navigatorKey,
-        theme: WCovidStatusTheme.theme(context),
+        theme: WCovidStatTheme.theme(context),
         themeMode: ThemeMode.system,
         home: const HomeScreen(),
+        //home: const CovidStatisticsScreen(),
       ),
     );
   }

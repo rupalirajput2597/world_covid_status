@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension RangeExtension on int {
   List<int> to(int maxInclusive, {int step = 1}) =>
@@ -11,4 +12,9 @@ Color hexToColor(String code) {
   } catch (e) {
     return Colors.transparent;
   }
+}
+
+//formatting number with thousand Separator
+String formatNumber(int number) {
+  return NumberFormat('#,##,###').format(number);
 }

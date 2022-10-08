@@ -5,6 +5,8 @@ import 'package:world_covid_status/core/.secret_key.dart';
 import 'package:world_covid_status/core/constants.dart';
 import 'package:world_covid_status/core/models/country_list_model.dart';
 
+import 'models/covid_case_stat.dart';
+
 class Api {
   static final Map<String, String> _header = {
     // "Content-Type": "application/json",
@@ -34,7 +36,6 @@ class Api {
       Uri url = Uri.parse(Config.COUNTRY_URL);
       var response = await http.get(url, headers: _header);
       var jsonResponse = _returnResponse(response);
-      print(jsonResponse);
       return CountryList.fromJson(jsonResponse);
     } catch (e) {
       print("errror ${e.toString()}");
@@ -46,6 +47,24 @@ class Api {
       Uri url = Uri.parse(Config.ISO_CODE_URL);
       var response = await http.get(url);
       return _returnResponse(response);
+    } catch (e) {
+      print("error ${e.toString()}");
+    }
+  }
+
+  static fetchCountryCovidDetails(String country) async {
+    try {
+      Uri url = Uri.parse(
+        "${Config.COVID_STAT_URL}country=$country",
+      );
+      print("${Config.COVID_STAT_URL}country=$country");
+      var response = await http.get(url, headers: _header);
+
+      var jsonResponse = _returnResponse(response);
+      print(jsonResponse);
+      print(json.decode(response.body.toString()));
+
+      return CovidStatResponse.fromJson(jsonResponse);
     } catch (e) {
       print("error ${e.toString()}");
     }

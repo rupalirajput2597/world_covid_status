@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:world_covid_status/core/core.dart';
+import 'package:world_covid_status/navigator/bloc/navigator_bloc.dart';
+import 'package:world_covid_status/navigator/bloc/navigator_event.dart';
 
 import 'bloc/bloc.dart';
+import 'home_shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -32,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
-          backgroundColor: hexToColor("#EEEEFF"),
+          backgroundColor: WCovidStatColor.backGroundColor(),
           title: const Text(
             "Cowid Status",
             style: TextStyle(color: Colors.blueAccent),
@@ -45,12 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             return (state is HomeLoadingState)
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Column(
-                    children: [_searchFieldWidget(), _listOfCountries()],
-                  );
+                ? const HomeShimmer()
+
+            : Column(
+                children: [_searchFieldWidget(), _listOfCountries()],
+              );
           }),
         ));
   }
@@ -121,37 +123,39 @@ class _HomeScreenState extends State<HomeScreen> {
           print("$oldA ${newA}");
 
           newA = filteredCountries[index].name.trim()[0].toUpperCase();
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (oldA != newA)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 16),
-                  child: Text(
-                    newA,
-                    style: const TextStyle(color: Colors.black, fontSize: 20),
+          return GestureDetector(
+            onTap: () {
+              BlocProvider.of<NavigatorBloc>(context)
+                  .add(NavigateToCovidDetailScreen(filteredCountries[index]));
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (oldA != newA)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 16),
+                    child: Text(
+                      newA,
+                      style: const TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  ),
+                Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                    leading: MyNetworkImage(
+                        networkUrl: filteredCountries[index].flagUrl),
+                    title: Text(filteredCountries[index].name),
                   ),
                 ),
-              Container(
-                color: Colors.white,
-                child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                  leading: Image.network(
-                    filteredCountries[index].flagUrl ??
-                        "https://flagcdn.com/h40/in.png",
-                    height: 24,
-                    width: 36,
-                  ),
-                  title: Text(filteredCountries[index].name),
+                const Divider(
+                  height: 0,
+                  color: Colors.grey,
                 ),
-              ),
-              const Divider(
-                height: 0,
-                color: Colors.grey,
-              ),
-            ],
+              ],
+            ),
           );
         }).toList()),
       ),
