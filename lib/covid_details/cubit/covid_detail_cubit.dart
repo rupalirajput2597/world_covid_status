@@ -15,6 +15,8 @@ class CovidDetailCubit extends Cubit<CovidDetailState> {
       covidStat = await Api.fetchCountryCovidDetails(selectedCountry.name);
       if (covidStat != null) {
         emit(CovidDetailFetchedState());
+      } else {
+        throw Exception();
       }
     } on SocketException catch (e, s) {
       emit(CovidDetailsErrorState(900));

@@ -22,7 +22,6 @@ class _CovidStatisticsScreenState extends State<CovidStatisticsScreen> {
   late final CovidDetailCubit _cubit;
   @override
   void initState() {
-    // TODO: implement initState
     _cubit = context.read<CovidDetailCubit>();
     _fetchCountryDetails();
     super.initState();
@@ -76,25 +75,30 @@ class _CovidStatisticsScreenState extends State<CovidStatisticsScreen> {
           Row(
             children: [
               Expanded(
-                  child: commonCard("Deaths",
-                      _cubit.covidStat?.covidDetails?.first.deaths?.total ?? 0,
-                      height: 150, textColor: Colors.red)),
+                  child: commonCard(
+                "Deaths",
+                _cubit.covidStat?.covidDetails?.first.deaths?.total ?? 0,
+                height: 150,
+                textColor: Colors.red,
+              )),
               Expanded(
                   child: commonCard(
-                      "Recovered",
-                      _cubit.covidStat?.covidDetails?.first.cases?.recovered ??
-                          0,
-                      height: 150,
-                      textColor: Colors.green)),
+                "Recovered",
+                _cubit.covidStat?.covidDetails?.first.cases?.recovered ?? 0,
+                height: 150,
+                textColor: Colors.green,
+              )),
             ],
           ),
           commonCard(
             "Active Cases",
             _cubit.covidStat?.covidDetails?.first.cases?.active ?? 0,
           ),
-          commonCard("Serious / Critical",
-              _cubit.covidStat?.covidDetails?.first.cases?.critical ?? 0,
-              showNewCases: true),
+          commonCard(
+            "Serious / Critical",
+            _cubit.covidStat?.covidDetails?.first.cases?.critical ?? 0,
+            showNewCases: true,
+          ),
         ],
       ),
     );

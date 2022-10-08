@@ -3,20 +3,18 @@ import 'country_model.dart';
 class CountryList {
   String? get;
   int? results;
-  List<String>? countries;
-  List<Country>? countriesNew;
+  List<Country>? countryList;
 
-  CountryList({this.get, this.results, this.countries});
+  CountryList({this.get, this.results});
 
   CountryList.fromJson(Map<String, dynamic> json) {
     get = json['get'];
     results = json['results'];
-    countries = json['response'].cast<String>();
 
     if (json['response'] != null) {
-      countriesNew = <Country>[];
+      countryList = <Country>[];
       json['response'].forEach((name) {
-        countriesNew!.add(Country(name: name));
+        countryList!.add(Country(name: name));
       });
     }
   }
@@ -25,7 +23,6 @@ class CountryList {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['get'] = get;
     data['results'] = results;
-    data['response'] = countries;
     return data;
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+//range extension
 extension RangeExtension on int {
   List<int> to(int maxInclusive, {int step = 1}) =>
       [for (int i = this; i <= maxInclusive; i += step) i];
 }
 
+//hexcode to color converter
 Color hexToColor(String code) {
   try {
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);

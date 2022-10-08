@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'core.dart';
+import '../core.dart';
 
 class Api {
   static final Map<String, String> _header = {
@@ -11,19 +11,21 @@ class Api {
   };
 
   static dynamic _returnResponse(http.Response response) {
-    switch (response.statusCode) {
-      case 200:
-        try {
-          var responseJson = json.decode(response.body.toString());
-          return responseJson;
-        } catch (e) {
-          print("error $e");
-        }
-        break;
+    try {
+      switch (response.statusCode) {
+        case 200:
+          try {
+            var responseJson = json.decode(response.body.toString());
+            return responseJson;
+          } catch (e) {
+            print("error $e");
+            return null;
+          }
 
-      default:
-        print("Error occured");
-    }
+        default:
+          return null;
+      }
+    } catch (e) {}
   }
 
   static fetchCountries() async {
@@ -64,19 +66,4 @@ class Api {
       print("error ${e.toString()}");
     }
   }
-
-//  binarySearch(List<int> arr, int userValue, int min, int max) {
-//   if (max >= min) {
-//     print('min $min');
-//     print('max $max');
-//     int mid = ((max + min) / 2).floor();
-//     if (userValue == arr[mid]) {
-//       print('your item is at index: ${mid}');
-//     } else if (userValue > arr[mid]) {
-//       binarySearch(arr, userValue, mid + 1, max);
-//     } else {
-//       binarySearch(arr, userValue, min, mid - 1);
-//     }
-//   }
-//   return null;
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'core/core.dart';
-import 'home/home.dart';
-import 'navigator/navigator.dart';
+import '../core/core.dart';
+import '../home/home.dart';
+import '../navigator/navigator.dart';
 
 void main() {
   runApp(const WorldCovidStatusApp());
@@ -37,7 +37,7 @@ class _WorldCovidStatusAppState extends State<WorldCovidStatusApp> {
         ),
       ],
       child: MaterialApp(
-        title: 'World Covid Status',
+        title: 'Covid-19 Statistics',
         navigatorKey: _navigatorKey,
         theme: WCovidStatTheme.theme(context),
         themeMode: ThemeMode.system,

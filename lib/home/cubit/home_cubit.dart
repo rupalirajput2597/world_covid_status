@@ -16,9 +16,14 @@ class HomeCubit extends Cubit<HomeState> {
   fetCountries() async {
     emit(HomeLoadingState());
     try {
-      CountryList l = await Api.fetchCountries();
-      isoCodes = await Api.fetchIsoCode();
-      countries = l.countriesNew ?? [];
+      CountryList? countryList = await Api.fetchCountries();
+      var isoResponse = await Api.fetchIsoCode();
+      if ((countryList != null) && (isoResponse != null)) {
+        countries = countryList.countryList ?? [];
+        isoCodes = isoResponse;
+      } else {
+        emit(HomeErrorState(100));
+      }
 
       _mapIsoCodeToCountry();
       emit(CountriesFetchSuccessfulState());

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core.dart';
-
+//App theme
 class WCovidStatTheme {
   static ThemeData theme(BuildContext context) {
     return ThemeData(

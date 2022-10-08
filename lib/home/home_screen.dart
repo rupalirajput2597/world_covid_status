@@ -13,11 +13,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //variable declaration
   late final HomeCubit _cubit;
-
   late final TextEditingController searchController;
   List<Country> filteredCountries = [];
 
+  //initializing
   @override
   void initState() {
     _cubit = context.read<HomeCubit>();
@@ -25,6 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
     filteredCountries = [];
     _fetchCountries();
     super.initState();
+  }
+
+  //disposing
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           title: const Text(
-            "Covid Reports",
+            "Covid-19 Statistics",
             style: TextStyle(color: Colors.pink),
           ),
         ),
@@ -54,26 +62,27 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             if (state is HomeErrorState) {
-              return ErrorPage(
-                statusCode: state.statusCode,
-                onRefresh: () {
-                  _fetchCountries();
-                },
-              );
+              return _errorWidget(state);
             }
 
             return (state is HomeLoadingState)
                 ? const HomeShimmer()
-                : Column(
-                    children: [_searchFieldWidget(), _listOfCountries()],
-                  );
+                : _content();
           }),
         ));
   }
 
+  //main body
+  Widget _content() {
+    return Column(
+      children: [_searchFieldWidget(), _listOfCountries()],
+    );
+  }
+
+  //search field
   _searchFieldWidget() {
     return Card(
-      margin: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+      margin: const EdgeInsets.fromLTRB(24, 20, 24, 16),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5))),
       child: TextField(
@@ -104,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+//clearing search text
   void _clearSearchBar() {
     if (searchController.text.isNotEmpty) {
       FocusScopeNode currentFocus = FocusScope.of(context);
@@ -122,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  //building UI for list of contries
   Widget _listOfCountries() {
     String oldAlphabet = "*";
     String newAlphabet = "*";
@@ -135,16 +146,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   newAlphabet =
                       filteredCountries[index].name.trim()[0].toUpperCase();
 
+                  //reseting aphabets
                   if (index == filteredCountries.length - 1) {
                     oldAlphabet = "*";
                     newAlphabet = "*";
                   }
 
                   return index == 0
-                      ? _countryListTile(filteredCountries[index],
-                          searchController.text.isEmpty, "Current Location")
-                      : _countryListTile(filteredCountries[index],
-                          (oldAlphabet != newAlphabet), newAlphabet);
+                      ? _countryListTile(
+                          filteredCountries[index],
+                          searchController.text.isEmpty,
+                          "Current Location") //current contry Tile
+                      : _countryListTile(
+                          filteredCountries[index],
+                          (oldAlphabet != newAlphabet),
+                          newAlphabet); //other Countries
                 }).toList()),
               )
             : _noDataWidget());
@@ -167,6 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _cubit.refreshScreen();
   }
 
+  //List's child widget
   Widget _countryListTile(
       Country country, bool buildAlphabetTile, String alphabet) {
     return GestureDetector(
@@ -217,6 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // no date widget
   _noDataWidget() {
     return const Center(
         child: Text(
@@ -227,5 +245,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _fetchCountries() {
     _cubit.fetCountries();
+  }
+
+  Widget _errorWidget(HomeErrorState state) {
+    return ErrorPage(
+      statusCode: state.statusCode,
+      onRefresh: () {
+        _fetchCountries();
+      },
+    );
   }
 }

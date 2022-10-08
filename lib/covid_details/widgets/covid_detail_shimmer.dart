@@ -9,8 +9,8 @@ class CovidDetailScreenShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            28.0, (MediaQuery.of(context).size.height * 0.01 + 28), 28, 28),
+        padding: EdgeInsets.only(
+            top: (MediaQuery.of(context).size.height * 0.01 + 28), bottom: 28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
