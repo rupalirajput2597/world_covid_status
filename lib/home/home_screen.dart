@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:world_covid_status/core/core.dart';
 
 import '../navigator/navigator.dart';
-import 'cubit/home_cubit.dart';
-import 'cubit/home_state.dart';
 import 'home.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,18 +13,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final HomeCubit _bloc;
+  late final HomeCubit _cubit;
 
   late final TextEditingController searchController;
   List<Country> filteredCountries = [];
 
   @override
   void initState() {
-    // _bloc = BlocProvider.of<HomeBloc>(context);
-    _bloc = context.read<HomeCubit>();
+    _cubit = context.read<HomeCubit>();
     searchController = TextEditingController();
     filteredCountries = [];
-    _bloc.fetCountries();
+    _fetchCountries();
     super.initState();
   }
 
@@ -46,14 +43,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           title: const Text(
-            "Covid Status",
+            "Covid Reports",
             style: TextStyle(color: Colors.pink),
           ),
         ),
         body: SafeArea(
           child: BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
             if (state is CountriesFetchSuccessfulState) {
-              filteredCountries = List.from(_bloc.countries);
+              filteredCountries = List.from(_cubit.countries);
+            }
+
+            if (state is HomeErrorState) {
+              return ErrorPage(
+                statusCode: state.statusCode,
+                onRefresh: () {
+                  _fetchCountries();
+                },
+              );
             }
 
             return (state is HomeLoadingState)
@@ -76,8 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _searchCountriesFunction(a);
         },
         decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).accentColor),
+          focusedBorder: const OutlineInputBorder(
             gapPadding: 0,
           ),
           contentPadding: const EdgeInsets.all(0),
@@ -107,11 +112,10 @@ class _HomeScreenState extends State<HomeScreen> {
       FocusScope.of(context).focusedChild?.unfocus();
       WidgetsBinding.instance
           .addPostFrameCallback((_) => searchController.clear());
-      filteredCountries = List.from(_bloc.countries);
+      filteredCountries = List.from(_cubit.countries);
       searchController.clear();
 
-      //_bloc.add(HomeRefreshEvent());
-      _bloc.refreshScreen();
+      _cubit.refreshScreen();
 
       return;
     }
@@ -122,41 +126,41 @@ class _HomeScreenState extends State<HomeScreen> {
     String newAlphabet = "*";
 
     return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.all(8),
-        children: (0.to(filteredCountries.length - 1).map((index) {
-          oldAlphabet = newAlphabet;
-          newAlphabet = filteredCountries[index].name.trim()[0].toUpperCase();
+        child: filteredCountries.isNotEmpty
+            ? ListView(
+                padding: const EdgeInsets.all(8),
+                children: (0.to(filteredCountries.length - 1).map((index) {
+                  oldAlphabet = newAlphabet;
+                  newAlphabet =
+                      filteredCountries[index].name.trim()[0].toUpperCase();
 
-          if (index == filteredCountries.length - 1) {
-            oldAlphabet = "*";
-            newAlphabet = "*";
-          }
+                  if (index == filteredCountries.length - 1) {
+                    oldAlphabet = "*";
+                    newAlphabet = "*";
+                  }
 
-          return _countryListTile(filteredCountries[index],
-              (oldAlphabet != newAlphabet), newAlphabet);
-        }).toList()),
-      ),
-    );
+                  return _countryListTile(filteredCountries[index],
+                      (oldAlphabet != newAlphabet), newAlphabet);
+                }).toList()),
+              )
+            : _noDataWidget());
   }
 
   _searchCountriesFunction(search) {
     filteredCountries.clear();
     if (search.isEmpty) {
-      filteredCountries = List.from(_bloc.countries);
-      // _bloc.add(HomeRefreshEvent());
-      _bloc.refreshScreen();
+      filteredCountries = List.from(_cubit.countries);
+      _cubit.refreshScreen();
       return;
     }
 
-    _bloc.countries.forEach((Country country) {
+    for (var country in _cubit.countries) {
       if (country.name.toLowerCase().startsWith(search.toLowerCase())) {
         filteredCountries.add(country);
       }
-    });
+    }
 
-    //_bloc.add(HomeRefreshEvent());
-    _bloc.refreshScreen();
+    _cubit.refreshScreen();
   }
 
   Widget _countryListTile(
@@ -202,62 +206,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-// child: ListView.separated(
-//   padding: const EdgeInsets.all(8),
-//   itemCount: _bloc.countries.length,
-//   itemBuilder: (BuildContext context, int index) {
-//     oldA = newA;
-//     print("$oldA ${newA}");
-//
-//     newA = _bloc.countries[index].name.trim()[0].toUpperCase();
-//
-//     return Column(
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-//         if (oldA != newA) Text("$newA"),
-//         Container(
-//           color: Colors.white,
-//           child: ListTile(
-//             leading: Image.network(_bloc.countries[index].flagUrl ??
-//                 "https://flagcdn.com/h40/in.png"),
-//             title: Text(_bloc.countries[index].name),
-//           ),
-//         ),
-//       ],
-//     );
-//   },
-//   separatorBuilder: (context, i) {
-//     return const Divider(
-//       color: Colors.grey,
-//     );
-//   },
-// ),
-// child: ListView.builder(
-//   padding: const EdgeInsets.all(8),
-//   itemCount: _bloc.countries.length,
-//   itemBuilder: (BuildContext context, int index) {
-//     oldA = newA;
-//     newA = _bloc.countries[index].name[0];
-//     print(_bloc.countries[index].name[0]);
-//
-//     return Column(
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-//         if (oldA != newA) Text("$newA"),
-//         Container(
-//           color: Colors.white,
-//           child: ListTile(
-//             leading: Image.network(_bloc.countries[index].flagUrl ??
-//                 "https://flagcdn.com/h40/in.png"),
-//             title: Text(_bloc.countries[index].name),
-//           ),
-//         ),
-//         const Divider(
-//           color: Colors.grey,
-//         ),
-//       ],
-//     );
-//   },
-// ),
+  _noDataWidget() {
+    return const Center(
+        child: Text(
+      "No Countries Found !",
+      style: TextStyle(fontSize: 20, color: Colors.pink),
+    ));
+  }
+
+  void _fetchCountries() {
+    _cubit.fetCountries();
+  }
+}

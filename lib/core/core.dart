@@ -9,5 +9,6 @@ export 'models/covid_details_model.dart';
 export 'models/covid_stat_response_model.dart';
 export 'theme.dart';
 export 'utils.dart';
+export 'widgets/error_page.dart';
 export 'widgets/network_image.dart';
 export 'widgets/shimmer_box.dart';

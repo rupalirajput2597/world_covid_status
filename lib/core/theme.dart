@@ -15,16 +15,4 @@ class WCovidStatColor {
   static Color backGroundColor() {
     return hexToColor("#EEEEFF");
   }
-
-  static Color whiteColor() {
-    return Colors.white;
-  }
-
-  static Color blackColor() {
-    return Colors.black;
-  }
-
-  static Color redColor() {
-    return Colors.red;
-  }
 }

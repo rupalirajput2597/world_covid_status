@@ -18,34 +18,3 @@ Color hexToColor(String code) {
 String formatNumber(int number) {
   return NumberFormat('#,##,###').format(number);
 }
-
-// Future<String> getCountryName() async {
-//   Position position = await Geolocator()
-//       .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-//   debugPrint('location: ${position.latitude}');
-//   final coordinates = new Coordinates(position.latitude, position.longitude);
-//   var addresses =
-//       await Geocoder.local.findAddressesFromCoordinates(coordinates);
-//   var first = addresses.first;
-//   return first.countryName; // this will return country name
-// }
-
-/*Future<String?> getCountryName() async {
-  Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high);
-  debugPrint('location: ${position.latitude}');
-  // final coordinates = Coordinates(position.latitude, position.longitude);
-
-  List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
-
-  // var addresses =
-  //     await Geocoder.local.findAddressesFromCoordinates(coordinates);
-  // var first = addresses.first;
-  // return first.countryName;
-  //
-  //this will return country name
-
-  return placemarks.first.isoCountryCode;
-}
-*/
