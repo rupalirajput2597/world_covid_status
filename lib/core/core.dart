@@ -1,8 +1,12 @@
+export '.secret_key.dart';
 export 'api.dart';
 export 'constants.dart';
 export 'models/country_list_model.dart';
 export 'models/country_model.dart';
-export 'models/covid_case_stat.dart';
+export 'models/covid_cases_model.dart';
+export 'models/covid_death_model.dart';
+export 'models/covid_details_model.dart';
+export 'models/covid_stat_response_model.dart';
 export 'theme.dart';
 export 'utils.dart';
 export 'widgets/network_image.dart';

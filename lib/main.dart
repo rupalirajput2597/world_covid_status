@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:world_covid_status/core/theme.dart';
-import 'package:world_covid_status/home/bloc/home_bloc.dart';
-import 'package:world_covid_status/navigator/bloc/navigator_bloc.dart';
 
-import 'home/home_screen.dart';
+import 'core/core.dart';
+import 'home/home.dart';
+import 'navigator/navigator.dart';
 
 void main() {
   runApp(const WorldCovidStatusApp());
@@ -33,12 +32,9 @@ class _WorldCovidStatusAppState extends State<WorldCovidStatusApp> {
         BlocProvider<NavigatorBloc>(
           create: (_) => NavigatorBloc(navigatorKey: _navigatorKey),
         ),
-        BlocProvider<HomeBloc>(
-          create: (_) => HomeBloc(),
+        BlocProvider<HomeCubit>(
+          create: (_) => HomeCubit(),
         ),
-        // BlocProvider<CovidDetailCubit>(
-        //   create: (_) => CovidDetailCubit(),
-        // ),
       ],
       child: MaterialApp(
         title: 'World Covid Status',
@@ -46,7 +42,6 @@ class _WorldCovidStatusAppState extends State<WorldCovidStatusApp> {
         theme: WCovidStatTheme.theme(context),
         themeMode: ThemeMode.system,
         home: const HomeScreen(),
-        //home: const CovidStatisticsScreen(),
       ),
     );
   }

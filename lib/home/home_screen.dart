@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:world_covid_status/core/core.dart';
-import 'package:world_covid_status/navigator/bloc/navigator_bloc.dart';
-import 'package:world_covid_status/navigator/bloc/navigator_event.dart';
 
-import 'bloc/bloc.dart';
-import 'home_shimmer.dart';
+import '../navigator/navigator.dart';
+import 'cubit/home_cubit.dart';
+import 'cubit/home_state.dart';
+import 'home.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,17 +15,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final HomeBloc _bloc;
+  late final HomeCubit _bloc;
 
   late final TextEditingController searchController;
   List<Country> filteredCountries = [];
 
   @override
   void initState() {
-    _bloc = BlocProvider.of<HomeBloc>(context);
+    // _bloc = BlocProvider.of<HomeBloc>(context);
+    _bloc = context.read<HomeCubit>();
     searchController = TextEditingController();
     filteredCountries = [];
-    _bloc.add(HomeInitialEvent());
+    _bloc.fetCountries();
     super.initState();
   }
 
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         body: SafeArea(
-          child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+          child: BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
             if (state is CountriesFetchSuccessfulState) {
               filteredCountries = List.from(_bloc.countries);
             }
@@ -66,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _searchFieldWidget() {
     return Card(
-      //elevation: 0,
       margin: const EdgeInsets.fromLTRB(24, 20, 24, 0),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -110,7 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
       filteredCountries = List.from(_bloc.countries);
       searchController.clear();
 
-      _bloc.add(HomeRefreshEvent());
+      //_bloc.add(HomeRefreshEvent());
+      _bloc.refreshScreen();
 
       return;
     }
@@ -132,47 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
             newAlphabet = "*";
           }
 
-          return GestureDetector(
-            onTap: () {
-              _clearSearchBar();
-              BlocProvider.of<NavigatorBloc>(context)
-                  .add(NavigateToCovidDetailScreen(filteredCountries[index]));
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (oldAlphabet != newAlphabet)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 16),
-                    child: Text(
-                      newAlphabet,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                Container(
-                  color: Colors.white,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                    leading: MyNetworkImage(
-                        networkUrl: filteredCountries[index].flagUrl),
-                    title: Text(filteredCountries[index].name),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Divider(
-                    height: 0,
-                    thickness: 1,
-                  ),
-                ),
-              ],
-            ),
-          );
+          return _countryListTile(filteredCountries[index],
+              (oldAlphabet != newAlphabet), newAlphabet);
         }).toList()),
       ),
     );
@@ -182,19 +144,63 @@ class _HomeScreenState extends State<HomeScreen> {
     filteredCountries.clear();
     if (search.isEmpty) {
       filteredCountries = List.from(_bloc.countries);
-      _bloc.add(HomeRefreshEvent());
-
+      // _bloc.add(HomeRefreshEvent());
+      _bloc.refreshScreen();
       return;
     }
 
     _bloc.countries.forEach((Country country) {
-      // if (country.name.toLowerCase().contains(search.toLowerCase())) {
       if (country.name.toLowerCase().startsWith(search.toLowerCase())) {
         filteredCountries.add(country);
       }
     });
 
-    _bloc.add(HomeRefreshEvent());
+    //_bloc.add(HomeRefreshEvent());
+    _bloc.refreshScreen();
+  }
+
+  Widget _countryListTile(
+      Country country, bool buildAlphabetTile, String alphabet) {
+    return GestureDetector(
+      onTap: () {
+        _clearSearchBar();
+        BlocProvider.of<NavigatorBloc>(context)
+            .add(NavigateToCovidDetailScreen(country));
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (buildAlphabetTile)
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16),
+              child: Text(
+                alphabet,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          Container(
+            color: Colors.white,
+            child: ListTile(
+              contentPadding: const EdgeInsets.only(left: 28),
+              leading: MyNetworkImage(networkUrl: country.flagUrl),
+              title: Text(country.name),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Divider(
+              height: 0,
+              thickness: 1,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

@@ -6,10 +6,15 @@ class MyNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      networkUrl ?? "https://flagcdn.com/h40/in.png",
-      height: 24,
-      width: 36,
-    );
+    return networkUrl != null
+        ? Image.network(
+            networkUrl ?? "https://flagcdn.com/h40/in.png",
+            height: 24,
+            width: 36,
+          )
+        : const Icon(
+            Icons.image,
+            size: 28,
+          );
   }
 }

@@ -1,16 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:world_covid_status/core/.secret_key.dart';
-import 'package:world_covid_status/core/constants.dart';
-import 'package:world_covid_status/core/models/country_list_model.dart';
 
-import 'models/covid_case_stat.dart';
+import 'core.dart';
 
 class Api {
   static final Map<String, String> _header = {
-    // "Content-Type": "application/json",
-    // "Accept": "application/json",
     "X-RapidAPI-Key": RAPID_API_KEY,
     "X-RapidAPI-Host": RAPID_API_HOST,
   };

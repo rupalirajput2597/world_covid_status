@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:world_covid_status/navigator/bloc/navigator_event.dart';
 
 import '../../covid_details/covid_details_screen.dart';
-import '../../covid_details/cubit/covin_detail_cubit.dart';
+import '../../covid_details/cubit/covid_detail_cubit.dart';
 
 class NavigatorBloc extends Bloc<NavigatorEvent, dynamic> {
   late final GlobalKey<NavigatorState> navigatorKey;
