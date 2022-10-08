@@ -43,6 +43,7 @@ class HomeCubit extends Cubit<HomeState> {
             .replaceAll(RegExp('[^A-Za-z0-9]'), '');
         var b = value.toString().trim().replaceAll(RegExp('[^A-Za-z0-9]'), '');
         if (a == b) {
+          countries[i].isoCode = key;
           countries[i].flagUrl = "https://flagcdn.com/h40/$key.png";
           if (key == "in") {
             currentCountry = countries[i];
@@ -53,5 +54,8 @@ class HomeCubit extends Cubit<HomeState> {
     countries.sort((a, b) {
       return a.name.compareTo(b.name);
     });
+
+    countries.remove(currentCountry);
+    countries.insert(0, currentCountry!);
   }
 }

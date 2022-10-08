@@ -82,7 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
           _searchCountriesFunction(a);
         },
         decoration: InputDecoration(
-          focusedBorder: const OutlineInputBorder(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).accentColor),
             gapPadding: 0,
           ),
           contentPadding: const EdgeInsets.all(0),
@@ -139,8 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     newAlphabet = "*";
                   }
 
-                  return _countryListTile(filteredCountries[index],
-                      (oldAlphabet != newAlphabet), newAlphabet);
+                  return index == 0
+                      ? _countryListTile(filteredCountries[index],
+                          searchController.text.isEmpty, "Current Location")
+                      : _countryListTile(filteredCountries[index],
+                          (oldAlphabet != newAlphabet), newAlphabet);
                 }).toList()),
               )
             : _noDataWidget());
@@ -183,17 +187,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 alphabet,
                 style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold),
               ),
             ),
           Container(
             color: Colors.white,
             child: ListTile(
-              contentPadding: const EdgeInsets.only(left: 28),
-              leading: MyNetworkImage(networkUrl: country.flagUrl),
-              title: Text(country.name),
-            ),
+                contentPadding: const EdgeInsets.only(left: 28, right: 20),
+                leading: MyNetworkImage(networkUrl: country.flagUrl),
+                title: Text(country.name),
+                trailing: (alphabet == "Current Location" &&
+                        (country.isoCode == "in"))
+                    ? const Icon(
+                        Icons.check,
+                        color: Colors.deepOrange,
+                      )
+                    : null),
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
