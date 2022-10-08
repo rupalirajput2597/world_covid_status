@@ -70,7 +70,7 @@ packages:
     source: hosted
     version: "8.1.1"
   flutter_lints:
-    dependency: "direct dev"
+    dependency: "direct overridden"
     description:
       name: flutter_lints
       url: "https://pub.dartlang.org"

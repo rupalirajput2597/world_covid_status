@@ -9,24 +9,15 @@ class HomeShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Center(
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey.withOpacity(0.2),
-            highlightColor: Colors.white,
-            child: Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 40),
-                color: Colors.pink,
-                height: 40,
-              ),
-            ),
-          ),
+        const Padding(
+          padding: EdgeInsets.only(top: 20.0),
+          child: ShimmerBox(height: 40),
         ),
         Expanded(
           child: ListView(
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.symmetric(vertical: 20),
-            children: (0.to(8)).map((i) {
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+            children: (0.to(6)).map((i) {
               return Shimmer.fromColors(
                 baseColor: Colors.grey.withOpacity(0.2),
                 highlightColor: Colors.white,
@@ -36,33 +27,30 @@ class HomeShimmer extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            width: 36,
-                            height: 24,
-                          ),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              width: 36,
+                              height: 24),
                           Container(
-                            margin: EdgeInsets.all(8),
-                            color: Colors.black,
-                            width: 50,
-                            height: 10,
-                          ),
+                              margin: const EdgeInsets.all(8),
+                              color: Colors.black,
+                              width: 50,
+                              height: 20),
                         ],
                       ),
                     Row(
                       children: [
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
-                          color: Colors.black,
-                          width: 36,
-                          height: 24,
-                        ),
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            color: Colors.black,
+                            width: 36,
+                            height: 24),
                         Expanded(
                           child: Container(
-                            margin: EdgeInsets.all(8),
-                            color: Colors.black,
-                            width: double.infinity,
-                            height: 50,
-                          ),
+                              margin: const EdgeInsets.all(8),
+                              color: Colors.black,
+                              width: double.infinity,
+                              height: 50),
                         ),
                       ],
                     ),

@@ -35,10 +35,18 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
-          backgroundColor: WCovidStatColor.backGroundColor(),
+          backgroundColor: Colors.white,
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              AssetHelper.app_logo,
+              width: 20,
+              height: 20,
+            ),
+          ),
           title: const Text(
-            "Cowid Status",
-            style: TextStyle(color: Colors.blueAccent),
+            "Covid Status",
+            style: TextStyle(color: Colors.pink),
           ),
         ),
         body: SafeArea(
@@ -49,45 +57,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return (state is HomeLoadingState)
                 ? const HomeShimmer()
-
-            : Column(
-                children: [_searchFieldWidget(), _listOfCountries()],
-              );
+                : Column(
+                    children: [_searchFieldWidget(), _listOfCountries()],
+                  );
           }),
         ));
   }
 
   _searchFieldWidget() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
-      child: Card(
-        //elevation: 0,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(5))),
-        child: TextField(
-          controller: searchController,
-          onChanged: (a) {
-            _searchCountriesFunction(a);
-          },
-          decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).accentColor),
-              gapPadding: 0,
-            ),
-            contentPadding: const EdgeInsets.all(0),
-            labelText: "Search",
-            labelStyle: Theme.of(context).textTheme.bodyText1,
-            border: InputBorder.none,
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: searchController.text.isEmpty
-                ? null
-                : GestureDetector(
-                    child: const Icon(Icons.close),
-                    onTap: () {
-                      _clearSearchBar();
-                    },
-                  ),
+    return Card(
+      //elevation: 0,
+      margin: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      child: TextField(
+        controller: searchController,
+        onChanged: (a) {
+          _searchCountriesFunction(a);
+        },
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).accentColor),
+            gapPadding: 0,
           ),
+          contentPadding: const EdgeInsets.all(0),
+          labelText: "Search",
+          labelStyle: Theme.of(context).textTheme.bodyText1,
+          border: InputBorder.none,
+          prefixIcon: const Icon(Icons.search),
+          suffixIcon: searchController.text.isEmpty
+              ? null
+              : GestureDetector(
+                  child: const Icon(Icons.close),
+                  onTap: () {
+                    _clearSearchBar();
+                  },
+                ),
         ),
       ),
     );
@@ -111,20 +116,25 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  String oldA = "*";
-  String newA = "*";
-
   Widget _listOfCountries() {
+    String oldAlphabet = "*";
+    String newAlphabet = "*";
+
     return Expanded(
       child: ListView(
         padding: const EdgeInsets.all(8),
         children: (0.to(filteredCountries.length - 1).map((index) {
-          oldA = newA;
-          print("$oldA ${newA}");
+          oldAlphabet = newAlphabet;
+          newAlphabet = filteredCountries[index].name.trim()[0].toUpperCase();
 
-          newA = filteredCountries[index].name.trim()[0].toUpperCase();
+          if (index == filteredCountries.length - 1) {
+            oldAlphabet = "*";
+            newAlphabet = "*";
+          }
+
           return GestureDetector(
             onTap: () {
+              _clearSearchBar();
               BlocProvider.of<NavigatorBloc>(context)
                   .add(NavigateToCovidDetailScreen(filteredCountries[index]));
             },
@@ -132,27 +142,33 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (oldA != newA)
+                if (oldAlphabet != newAlphabet)
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0, vertical: 16),
                     child: Text(
-                      newA,
-                      style: const TextStyle(color: Colors.black, fontSize: 20),
+                      newAlphabet,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 Container(
                   color: Colors.white,
                   child: ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     leading: MyNetworkImage(
                         networkUrl: filteredCountries[index].flagUrl),
                     title: Text(filteredCountries[index].name),
                   ),
                 ),
-                const Divider(
-                  height: 0,
-                  color: Colors.grey,
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Divider(
+                    height: 0,
+                    thickness: 1,
+                  ),
                 ),
               ],
             ),

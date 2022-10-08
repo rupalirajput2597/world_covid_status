@@ -6,3 +6,4 @@ export 'models/covid_case_stat.dart';
 export 'theme.dart';
 export 'utils.dart';
 export 'widgets/network_image.dart';
+export 'widgets/shimmer_box.dart';

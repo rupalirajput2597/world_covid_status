@@ -11,7 +11,7 @@ class CovidDetailCubit extends Cubit<CovidDetailState> {
   fetchCovidDetailForCountry(Country selectedCountry) async {
     emit(CovidDetailLoadingState());
     try {
-      covidStat = await Api.fetchCountryCovidDetails(selectedCountry.name);
+      // covidStat = await Api.fetchCountryCovidDetails(selectedCountry.name);
 
       if (covidStat != null) {
         print(covidStat?.toJson().toString());

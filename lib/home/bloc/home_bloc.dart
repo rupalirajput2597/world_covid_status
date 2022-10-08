@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:world_covid_status/core/constants.dart';
+import 'package:world_covid_status/core/core.dart';
 
 import '../../core/models/country_model.dart';
 import 'home_event.dart';
@@ -13,17 +14,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<Country> countries = [];
   Map<String, dynamic> isoCodes = <String, dynamic>{};
 
+  Country? currentCountry;
+
   void mapEventToState(HomeEvent event, Emitter<HomeState> emit) async {
     if (event is HomeInitialEvent) {
       emit(HomeLoadingState());
       try {
-        //CountryList l = await Api.fetchCountries();
+        CountryList l = await Api.fetchCountries();
+
+        // var a = await getCountryName();
         isoCodes = Constants.countriesCode; //await Api.fetchIsoCode();
-        // countries = l.countriesNew ?? [];
-        Constants.countriesL.forEach((element) {
-          //var a = element.toString().trim().replaceAll("-", " ");
-          countries.add(Country(name: element));
-        });
+        countries = l.countriesNew ?? [];
+        // Constants.countriesL.forEach((element) {
+        //   //var a = element.toString().trim().replaceAll("-", " ");
+        //   countries.add(Country(name: element));
+        // });
         print("here ---  ${countries.length}");
         print("here ---  ${isoCodes.length}");
 
@@ -52,6 +57,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         //  print("$b == $a");
         if (a == b) {
           countries[i].flagUrl = "https://flagcdn.com/h40/$key.png";
+          if (key == "in") {
+            currentCountry = countries[i];
+          }
         }
       }
     });

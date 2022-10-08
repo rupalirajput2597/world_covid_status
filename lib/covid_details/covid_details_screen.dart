@@ -5,6 +5,7 @@ import 'package:world_covid_status/navigator/bloc/navigator_event.dart';
 
 import '../core/core.dart';
 import '../navigator/bloc/navigator_bloc.dart';
+import 'covide_detail_screen_shimmer.dart';
 import 'cubit/covin_detail_cubit.dart';
 import 'cubit/covin_detail_state.dart';
 
@@ -46,110 +47,113 @@ class _CovidStatisticsScreenState extends State<CovidStatisticsScreen> {
       ),
       body: SafeArea(
         child: Container(
-          //padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top * 3),
           padding:
               EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  stops: const [0.3, 0.25],
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.red, WCovidStatColor.backGroundColor()])),
           child: Padding(
             padding: const EdgeInsets.all(28.0),
             child: BlocBuilder<CovidDetailCubit, CovidDetailState>(
                 builder: (context, state) {
-              return (state is CovidDetailLoadingState)
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                    DateFormat('dd MMM, y GGG hh:mm a')
-                                        .format(DateTime.now()),
-                                    //
-                                    //"${_cubit.covidStat?.covidDetails?.first.time}",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w200)),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                    "Total Cases in ${_cubit.covidStat?.covidDetails?.first.country}",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w300)),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text(formatNumber(68887878),
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500)),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                              ],
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: MyNetworkImage(
-                                networkUrl: widget.selectedCountry.flagUrl,
+              return true //s(state is CovidDetailLoadingState)
+                  ? CovidDetailScreenShimmer()
+                  : Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              stops: const [0.3, 0.25],
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.red,
+                                WCovidStatColor.backGroundColor()
+                              ])),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      DateFormat('dd MMM, y GGG hh:mm a')
+                                          .format(DateTime.now()),
+                                      //
+                                      //"${_cubit.covidStat?.covidDetails?.first.time}",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w200)),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                      "Total Cases in ${_cubit.covidStat?.covidDetails?.first.country}",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w300)),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(formatNumber(68887878),
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500)),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: casesCard(
-                                    "Deaths",
-                                    _cubit.covidStat?.covidDetails?.first.deaths
-                                            ?.total ??
-                                        0,
-                                    height: 150,
-                                    textColor: Colors.red)),
-                            Expanded(
-                                child: casesCard(
-                                    "Recovered",
-                                    _cubit.covidStat?.covidDetails?.first.cases
-                                            ?.recovered ??
-                                        0,
-                                    height: 150,
-                                    textColor: Colors.green)),
-                          ],
-                        ),
-                        casesCard(
-                          "Active Cases",
-                          _cubit.covidStat?.covidDetails?.first.cases?.active ??
-                              0,
-                        ),
-                        casesCard(
-                            "Serius / Critical",
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: MyNetworkImage(
+                                  networkUrl: widget.selectedCountry.flagUrl,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: casesCard(
+                                      "Deaths",
+                                      _cubit.covidStat?.covidDetails?.first
+                                              .deaths?.total ??
+                                          0,
+                                      height: 150,
+                                      textColor: Colors.red)),
+                              Expanded(
+                                  child: casesCard(
+                                      "Recovered",
+                                      _cubit.covidStat?.covidDetails?.first
+                                              .cases?.recovered ??
+                                          0,
+                                      height: 150,
+                                      textColor: Colors.green)),
+                            ],
+                          ),
+                          casesCard(
+                            "Active Cases",
                             _cubit.covidStat?.covidDetails?.first.cases
-                                    ?.critical ??
+                                    ?.active ??
                                 0,
-                            showNewCases: true),
-                      ],
+                          ),
+                          casesCard(
+                              "Serius / Critical",
+                              _cubit.covidStat?.covidDetails?.first.cases
+                                      ?.critical ??
+                                  0,
+                              showNewCases: true),
+                        ],
+                      ),
                     );
             }),
           ),

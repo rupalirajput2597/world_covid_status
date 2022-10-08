@@ -6,7 +6,8 @@ class WCovidStatTheme {
   static ThemeData theme(BuildContext context) {
     return ThemeData(
       brightness: Brightness.light,
-      scaffoldBackgroundColor: WCovidStatColor.backGroundColor(),
+      // scaffoldBackgroundColor: WCovidStatColor.backGroundColor(),
+      // scaffoldBackgroundColor: WCovidStatColor.backGroundColor(),
     );
   }
 }

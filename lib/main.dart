@@ -11,7 +11,7 @@ void main() {
 }
 
 class WorldCovidStatusApp extends StatefulWidget {
-  const WorldCovidStatusApp({super.key});
+  const WorldCovidStatusApp({Key? key}) : super(key: key);
 
   @override
   State<WorldCovidStatusApp> createState() => _WorldCovidStatusAppState();
