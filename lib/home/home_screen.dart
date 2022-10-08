@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:world_covid_status/core/core.dart';
 
 import '../navigator/navigator.dart';
@@ -133,35 +134,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //building UI for list of contries
+  ///
+  /// using here the grouped list package widget [groupedContryList]
+  ///  but I have also created the custom GroupedList View [_customGroupListView]
+  ///
   Widget _listOfCountries() {
-    String oldAlphabet = "*";
-    String newAlphabet = "*";
-
     return Expanded(
         child: filteredCountries.isNotEmpty
-            ? ListView(
-                padding: const EdgeInsets.all(8),
-                children: (0.to(filteredCountries.length - 1).map((index) {
-                  oldAlphabet = newAlphabet;
-                  newAlphabet =
-                      filteredCountries[index].name.trim()[0].toUpperCase();
-
-                  //reseting aphabets
-                  if (index == filteredCountries.length - 1) {
-                    oldAlphabet = "*";
-                    newAlphabet = "*";
-                  }
-
-                  return index == 0
-                      ? _countryListTile(
-                          filteredCountries[index],
-                          searchController.text.isEmpty,
-                          "Current Location") //current contry Tile
-                      : _countryListTile(
-                          filteredCountries[index],
-                          (oldAlphabet != newAlphabet),
-                          newAlphabet); //other Countries
-                }).toList()),
+            ? Column(
+                children: [
+                  if (searchController.text.isEmpty)
+                    _countryListTile(filteredCountries[0],
+                        searchController.text.isEmpty, "Current Location"),
+                  Expanded(child: groupedContryList()),
+                ],
               )
             : _noDataWidget());
   }
@@ -181,6 +167,81 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     _cubit.refreshScreen();
+  }
+
+  // no date widget
+  _noDataWidget() {
+    return const Center(
+        child: Text(
+      "No Countries Found !",
+      style: TextStyle(fontSize: 20, color: Colors.pink),
+    ));
+  }
+
+  void _fetchCountries() {
+    _cubit.fetCountries();
+  }
+
+  Widget _errorWidget(HomeErrorState state) {
+    return ErrorPage(
+      statusCode: state.statusCode,
+      onRefresh: () {
+        _fetchCountries();
+      },
+    );
+  }
+
+  Widget groupedContryList() {
+    return GroupedListView<Country, String>(
+      elements: filteredCountries,
+      groupBy: (country) {
+        return country.name.trim()[0].toUpperCase();
+      },
+      groupComparator: (value1, value2) => value2.compareTo(value1),
+      itemComparator: (item1, item2) => item1.name.compareTo(item2.name),
+      order: GroupedListOrder.DESC,
+      groupSeparatorBuilder: (String alphabet) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16),
+        child: Text(
+          alphabet,
+          style: const TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ),
+      itemBuilder: (c, element) {
+        return GestureDetector(
+          onTap: () {
+            _clearSearchBar();
+            BlocProvider.of<NavigatorBloc>(context)
+                .add(NavigateToCovidDetailScreen(element));
+          },
+          child: Column(
+            children: [
+              Container(
+                color: Colors.white,
+                child: ListTile(
+                    contentPadding: const EdgeInsets.only(left: 28, right: 20),
+                    leading: MyNetworkImage(networkUrl: element.flagUrl),
+                    title: Text(element.name),
+                    trailing: (element.isoCode == "in")
+                        ? const Icon(
+                            Icons.check,
+                            color: Colors.deepOrange,
+                          )
+                        : null),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Divider(
+                  height: 0,
+                  thickness: 1,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   //List's child widget
@@ -234,25 +295,39 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // no date widget
-  _noDataWidget() {
-    return const Center(
-        child: Text(
-      "No Countries Found !",
-      style: TextStyle(fontSize: 20, color: Colors.pink),
-    ));
-  }
+  ///My custom GroupedList
+  ///please copy this code paste it in [_listOfCountries ] widget instead of
+  /// Column(
+  ///                     children: [
+  ///                       if (searchController.text.isEmpty)
+  ///                         _countryListTile(filteredCountries[0],
+  ///                             searchController.text.isEmpty, "Current Location"),
+  ///                       Expanded(child: groupedContryList()),
+  ///                    ],
+  ///                  )
 
-  void _fetchCountries() {
-    _cubit.fetCountries();
-  }
+/*  String oldAlphabet = "*";
+  String newAlphabet = "*";
+ ListView(
+      padding: const EdgeInsets.all(8),
+      children: (0.to(filteredCountries.length - 1).map((index) {
+        oldAlphabet = newAlphabet;
+        newAlphabet = filteredCountries[index].name.trim()[0].toUpperCase();
 
-  Widget _errorWidget(HomeErrorState state) {
-    return ErrorPage(
-      statusCode: state.statusCode,
-      onRefresh: () {
-        _fetchCountries();
-      },
-    );
-  }
+        //resetting aphabets
+        if (index == filteredCountries.length - 1) {
+          oldAlphabet = "*";
+          newAlphabet = "*";
+        }
+
+        return index == 0
+            ? _countryListTile(
+                filteredCountries[index],
+                searchController.text.isEmpty,
+                "Current Location") //current contry Tile
+            : _countryListTile(filteredCountries[index],
+                (oldAlphabet != newAlphabet), newAlphabet); //other Countries
+      }).toList()),
+    ) */
+
 }
