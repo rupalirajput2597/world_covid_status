@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.world_covid_status">
-   <application
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <application
         android:label="Covid-19 Statistics"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

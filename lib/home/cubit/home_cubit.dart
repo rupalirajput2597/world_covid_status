@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
 
 import '/../core/core.dart';
 import '../home.dart';
@@ -13,10 +15,11 @@ class HomeCubit extends Cubit<HomeState> {
 
   Country? currentCountry;
 
-  fetCountries() async {
+  fetCountries(context, {isRefreshing = true}) async {
     emit(HomeLoadingState());
     try {
       CountryList? countryList = await Api.fetchCountries();
+      if (!isRefreshing) await getCurrentLocation(context);
       var isoResponse = await Api.fetchIsoCode();
       if ((countryList != null) && (isoResponse != null)) {
         countries = countryList.countryList ?? [];
@@ -38,6 +41,22 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeRefreshState());
   }
 
+  getCurrentLocation(BuildContext context) async {
+    try {
+      Placemark? place = await getCountry(context);
+      if (place != null) {
+        currentCountry = Country(name: place.country!);
+        currentCountry?.isoCode = place.isoCountryCode?.toLowerCase();
+        currentCountry?.flagUrl =
+            "https://flagcdn.com/h40/${currentCountry?.isoCode}.png";
+      } else {
+        currentCountry = null;
+      }
+    } catch (e) {
+      currentCountry = null;
+    }
+  }
+
   _mapIsoCodeToCountry() {
     isoCodes.forEach((key, value) {
       for (int i = 0; i < countries.length; ++i) {
@@ -50,9 +69,6 @@ class HomeCubit extends Cubit<HomeState> {
         if (a == b) {
           countries[i].isoCode = key;
           countries[i].flagUrl = "https://flagcdn.com/h40/$key.png";
-          if (key == "in") {
-            currentCountry = countries[i];
-          }
         }
       }
     });
@@ -60,7 +76,9 @@ class HomeCubit extends Cubit<HomeState> {
       return a.name.compareTo(b.name);
     });
 
-    countries.remove(currentCountry);
-    countries.insert(0, currentCountry!);
+    if (currentCountry != null) {
+      countries.remove(currentCountry);
+      countries.insert(0, currentCountry!);
+    }
   }
 }

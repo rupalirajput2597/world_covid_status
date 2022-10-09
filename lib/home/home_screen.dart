@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _cubit = context.read<HomeCubit>();
     searchController = TextEditingController();
     filteredCountries = [];
-    _fetchCountries();
+    _fetchCountries(false);
     super.initState();
   }
 
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return RefreshIndicator(
       onRefresh: () async {
         Future.delayed(Duration(milliseconds: 2), () {
-          _fetchCountries();
+          _fetchCountries(true);
         });
       },
       child: Column(
@@ -150,7 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: filteredCountries.isNotEmpty
             ? Column(
                 children: [
-                  if (searchController.text.isEmpty)
+                  if ((searchController.text.isEmpty) &&
+                      (_cubit.currentCountry != null))
                     _countryListTile(filteredCountries[0],
                         searchController.text.isEmpty, "Current Location"),
                   Expanded(child: groupedContryList()),
@@ -185,15 +186,15 @@ class _HomeScreenState extends State<HomeScreen> {
     ));
   }
 
-  void _fetchCountries() {
-    _cubit.fetCountries();
+  void _fetchCountries(isRefreshing) {
+    _cubit.fetCountries(context, isRefreshing: isRefreshing);
   }
 
   Widget _errorWidget(HomeErrorState state) {
     return ErrorPage(
       statusCode: state.statusCode,
       onRefresh: () {
-        _fetchCountries();
+        _fetchCountries(false);
       },
     );
   }
@@ -227,15 +228,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 color: Colors.white,
                 child: ListTile(
-                    contentPadding: const EdgeInsets.only(left: 28, right: 20),
-                    leading: MyNetworkImage(networkUrl: element.flagUrl),
-                    title: Text(element.name),
-                    trailing: (element.isoCode == "in")
-                        ? const Icon(
-                            Icons.check,
-                            color: Colors.deepOrange,
-                          )
-                        : null),
+                  contentPadding: const EdgeInsets.only(left: 28, right: 20),
+                  leading: MyNetworkImage(networkUrl: element.flagUrl),
+                  title: Text(element.name),
+                ),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -283,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: MyNetworkImage(networkUrl: country.flagUrl),
                 title: Text(country.name),
                 trailing: (alphabet == "Current Location" &&
-                        (country.isoCode == "in"))
+                        (_cubit.currentCountry != null))
                     ? const Icon(
                         Icons.check,
                         color: Colors.deepOrange,

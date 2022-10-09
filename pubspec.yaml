@@ -43,6 +43,8 @@ dependencies:
   fluttertoast: ^8.0.9
   flutter_launcher_icons: ^0.10.0
   grouped_list: ^5.1.2
+  geolocator: ^9.0.2
+  geocoding: ^2.0.4
 
 dev_dependencies:
   flutter_test:
