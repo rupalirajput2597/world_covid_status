@@ -228,10 +228,16 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 color: Colors.white,
                 child: ListTile(
-                  contentPadding: const EdgeInsets.only(left: 28, right: 20),
-                  leading: MyNetworkImage(networkUrl: element.flagUrl),
-                  title: Text(element.name),
-                ),
+                    contentPadding: const EdgeInsets.only(left: 28, right: 20),
+                    leading: MyNetworkImage(networkUrl: element.flagUrl),
+                    title: Text(element.name),
+                    trailing: ((_cubit.currentCountry != null) &&
+                            (element.isoCode == _cubit.currentCountry?.isoCode))
+                        ? const Icon(
+                            Icons.check,
+                            color: Colors.deepOrange,
+                          )
+                        : null),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
