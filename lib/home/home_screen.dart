@@ -75,8 +75,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //main body
   Widget _content() {
-    return Column(
-      children: [_searchFieldWidget(), _listOfCountries()],
+    return RefreshIndicator(
+      onRefresh: () async {
+        Future.delayed(Duration(milliseconds: 2), () {
+          _fetchCountries();
+        });
+      },
+      child: Column(
+        children: [_searchFieldWidget(), _listOfCountries()],
+      ),
     );
   }
 

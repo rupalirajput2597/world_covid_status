@@ -41,6 +41,19 @@ class _CovidStatisticsScreenState extends State<CovidStatisticsScreen> {
             BlocProvider.of<NavigatorBloc>(context).add(NavigatorActionPop());
           },
         ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                Future.delayed(Duration(milliseconds: 2), () {
+                  _fetchCountryDetails();
+                });
+              },
+              icon: Icon(
+                Icons.refresh,
+                size: 28,
+                color: Colors.white,
+              ))
+        ],
       ),
       body: SafeArea(
         child: BlocBuilder<CovidDetailCubit, CovidDetailState>(
@@ -62,44 +75,46 @@ class _CovidStatisticsScreenState extends State<CovidStatisticsScreen> {
   }
 
   Widget _content() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-          28.0, (MediaQuery.of(context).size.height * 0.01 + 28), 28, 28),
-      decoration: _pageBackground(),
-      child: Column(
-        children: [
-          _header(),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: commonCard(
-                "Deaths",
-                _cubit.covidStat?.covidDetails?.first.deaths?.total ?? 0,
-                height: 150,
-                textColor: Colors.red,
-              )),
-              Expanded(
-                  child: commonCard(
-                "Recovered",
-                _cubit.covidStat?.covidDetails?.first.cases?.recovered ?? 0,
-                height: 150,
-                textColor: Colors.green,
-              )),
-            ],
-          ),
-          commonCard(
-            "Active Cases",
-            _cubit.covidStat?.covidDetails?.first.cases?.active ?? 0,
-          ),
-          commonCard(
-            "Serious / Critical",
-            _cubit.covidStat?.covidDetails?.first.cases?.critical ?? 0,
-            showNewCases: true,
-          ),
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.fromLTRB(
+            28.0, (MediaQuery.of(context).size.height * 0.01 + 28), 28, 28),
+        decoration: _pageBackground(),
+        child: Column(
+          children: [
+            _header(),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: commonCard(
+                  "Deaths",
+                  _cubit.covidStat?.covidDetails?.first.deaths?.total ?? 0,
+                  height: 150,
+                  textColor: Colors.red,
+                )),
+                Expanded(
+                    child: commonCard(
+                  "Recovered",
+                  _cubit.covidStat?.covidDetails?.first.cases?.recovered ?? 0,
+                  height: 150,
+                  textColor: Colors.green,
+                )),
+              ],
+            ),
+            commonCard(
+              "Active Cases",
+              _cubit.covidStat?.covidDetails?.first.cases?.active ?? 0,
+            ),
+            commonCard(
+              "Serious / Critical",
+              _cubit.covidStat?.covidDetails?.first.cases?.critical ?? 0,
+              showNewCases: true,
+            ),
+          ],
+        ),
       ),
     );
   }
