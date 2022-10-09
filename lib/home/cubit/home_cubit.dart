@@ -77,7 +77,9 @@ class HomeCubit extends Cubit<HomeState> {
     });
 
     if (currentCountry != null) {
-      countries.remove(currentCountry);
+      countries.removeWhere((country) {
+        return currentCountry?.isoCode == country.isoCode;
+      });
       countries.insert(0, currentCountry!);
     }
   }
