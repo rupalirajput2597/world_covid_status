@@ -1,6 +1,8 @@
 # world_covid_status
 
-A new Flutter project.
+This App shows the covid-19 statistical data according to selected country.
+- [App Video Link](https://drive.google.com/file/d/1aeWgI1I8MWQIyRCKPWUwR2GowCodu0GV/view?usp=sharing)
+
 
 ## Getting Started
 
