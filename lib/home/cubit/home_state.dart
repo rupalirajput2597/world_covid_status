@@ -12,3 +12,5 @@ class HomeErrorState extends HomeState {
   final int statusCode;
   HomeErrorState(this.statusCode);
 }
+
+class HomeCurrentLocationState extends HomeState {}
