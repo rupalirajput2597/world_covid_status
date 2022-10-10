@@ -218,7 +218,10 @@ class _CovidStatisticsScreenState extends State<CovidStatisticsScreen> {
             const SizedBox(
               height: 8,
             ),
-            Text(formatNumber(68887878),
+            Text(
+                formatNumber(
+                  _cubit.covidStat?.covidDetails?.first.cases?.total ?? 0,
+                ),
                 style: const TextStyle(
                     fontSize: 30,
                     color: Colors.white,
